@@ -22,25 +22,54 @@ app.get('/fortunes/:id', (req, res) => {
     res.json(fortunes.find(f => f.id == req.params.id));
 });
 
+const writeFortunes = json => {
+    fs.writeFile('./data/fortunes.json', JSON.stringify(json), err => console.log(err));
+};
+
 // POST request
 app.post('/fortunes', (req, res) => {
-    console.log(req.body);
     const {message, lucky_number, spirit_animal} = req.body;
     
     // array looping through all ids
     const fortune_ids = fortunes.map(f => f.id);
 
-    const fortune = {
+    // append the new json into the existing json object
+    const new_fortune = fortunes.concat({
         id: (fortune_ids.length > 0 ? Math.max(...fortune_ids) : 0) + 1, 
         message, 
         lucky_number, 
         spirit_animal
-    };
+    });
 
-    const new_fortune = fortunes.concat(fortune);
-    // Parse the obj to json and write it to the db
-    fs.writeFile('./data/fortunes.json', JSON.stringify(new_fortune), err => console.log(err));
+    // Replce all content in the file with the json objs above
+    writeFortunes(new_fortune);
     res.json(new_fortune);
 });
+
+// PUT request
+app.put('/fortunes/:id', (req, res) => {
+    const {id} = req.params;
+
+    const old_fortune = fortunes.find(f => f.id == id);
+
+    ['message', 'lucky_number', 'spirit_number'].forEach(key => {
+        if (req.body[key]) old_fortune[key] = req.body[key];
+    });
+
+    // Replce all content in the file with the json objs above
+    writeFortunes(fortunes);
+    res.json(fortunes);
+});
+
+app.delete('/fortunes/:id', (req, res) => {
+    const { id } = req.params;
+
+    const new_fortune = fortunes.filter(f => f.id != id);
+
+    writeFortunes(new_fortune);
+
+    res.json(new_fortune);
+});
+
 
 module.exports = app;
