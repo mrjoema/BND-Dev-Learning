@@ -3,7 +3,8 @@ import { View } from 'react-native';
 
 const CardSection = (props) => {
     return (
-        <View style={styles.containerStyle}>
+        // [....] --> use default setting in containerStyle unless you defining somthing specific outside
+        <View style={[styles.containerStyle, props.style]}>
             {props.children}
         </View>
     );
