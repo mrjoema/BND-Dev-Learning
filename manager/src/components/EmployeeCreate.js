@@ -13,6 +13,7 @@ class EmployeeCreate extends Component {
     }
 
     render() {
+        console.log(this.props.employee);
         return (
             <Card>
                 <CardSection> 
@@ -68,7 +69,6 @@ const styles = {
 
 const mapStateToProps = (state) => {
     const {name, phone, shift} = state.employeeForm;
-    console.log('component state data: ', name, phone, shift);
     return {name, phone, shift};
 };
 
