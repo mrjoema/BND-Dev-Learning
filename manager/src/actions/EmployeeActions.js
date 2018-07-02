@@ -36,7 +36,7 @@ export const employeesFetch = () => {
                     dispatch({type: EMPLOYEES_FETCH_SUCCESS, payload: snapshot.val()});
                 });
     }
-}
+};
 
 export const employeeSave = ({name, phone, shift, uid}) => {
     const { currentUser } = firebase.auth();
@@ -49,4 +49,15 @@ export const employeeSave = ({name, phone, shift, uid}) => {
                     Actions.pop();
                 });
     }
-}
+};
+
+export const employeeDelete = ({ uid }) => {
+    const { currentUser } = firebase.auth();
+    return () => {
+        firebase.database().ref(`/users/${currentUser.uid}/employees/${uid}`)
+                .remove()
+                .then(() => {
+                    Actions.pop();
+                });
+    }
+};
